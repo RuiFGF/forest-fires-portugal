@@ -2,19 +2,17 @@ import pandas as pd
 import sqlite3
 
 # Path to csv file
-CSV_PATH = 'data/heart.csv'
+CSV_PATH = 'data/forestfires.csv'
 
 # Path to sqlite databse
-SQL_PATH = 'data/HeartFailureDB.db'
+SQL_PATH = 'data/ForestFireDB.db'
 
 # Read csv
 data = pd.read_csv(CSV_PATH)
 print("shape of input data is " + str(data.shape) )
 data.head()
 
-
-
-# Code in the following cells was adapted from: https://www.sqlitetutorial.net/sqlite-python/create-tables/
+# Following code was adapted from: https://www.sqlitetutorial.net/sqlite-python/create-tables/
 def create_connection(db_file):
     """ create a database connection to the SQLite database
         specified by db_file
@@ -30,7 +28,7 @@ def create_connection(db_file):
 
     return conn
 
-def create_table(conn, create_table_sql):
+def create_table(conn, create_table_sql, drop_table_sql):
     """ create a table from the create_table_sql statement
     :param conn: Connection object
     :param create_table_sql: a CREATE TABLE statement
@@ -38,48 +36,46 @@ def create_table(conn, create_table_sql):
     """
     try:
         c = conn.cursor()
+        c.execute(drop_table_sql)
         c.execute(create_table_sql)
     except Error as e:
         print(e)
+        
+drop_table_str = """DROP TABLE IF EXISTS fires;"""
 
-
-create_table_str = """CREATE TABLE IF NOT EXISTS heart (
-                                    id integer PRIMARY KEY,
-                                    Age integer,
-                                    Sex text,
-                                    ChestPainType text,
-                                    RestingBP integer,
-                                    Cholesterol integer,
-                                    FastingBS integer,
-                                    RestingECG text,
-                                    MaxHR integer,
-                                    ExerciseAngina text,
-                                    Oldpeak real,
-                                    ST_Slope text,
-                                    HeartDisease integer
+create_table_str = """CREATE TABLE fires (
+                                    x integer,
+                                    y integer,
+                                    month text,
+                                    day text,
+                                    FFMC real,
+                                    DMC real,
+                                    DC real,
+                                    ISI real,
+                                    temp real,
+                                    RH real,
+                                    wind real,
+                                    rain real,
+                                    area real
                                 );"""
-
+   
 # Create connection
 conn = create_connection(SQL_PATH)
 
 # Create table
 if conn is not None:
-    create_table(conn, create_table_str)
+    create_table(conn, create_table_str, drop_table_str)
 
 conn.close()
-
-
 
 # Write pandas data to sql table
 conn = create_connection(SQL_PATH)
-data.to_sql('heart', conn, if_exists='append', index=False)
+data.to_sql('fires', conn, if_exists='replace', index=False)
 conn.close()
-
-
 
 # Test read
 conn = create_connection(SQL_PATH)
-data_sql = pd.read_sql("SELECT * FROM heart", conn) # Never use SELECT * in production
+data_sql = pd.read_sql("SELECT * FROM fires", conn) # Never use SELECT * in production
 conn.close()
 
 print("shape of output data is " + str(data_sql.shape) )

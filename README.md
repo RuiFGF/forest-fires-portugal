@@ -1,0 +1,1 @@
+This is a Machine Learning practice exercise, applying [Catboost](https://catboost.ai/) to the kaggle [Forest Fires Data Set Portugal dataset](https://www.kaggle.com/datasets/ishandutta/forest-fires-data-set-portugal) based on [this tutorial](https://towardsdatascience.com/an-end-to-end-machine-learning-project-heart-failure-prediction-part-1-ccad0b3b468a).

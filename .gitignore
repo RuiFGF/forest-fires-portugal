@@ -1,0 +1,17 @@
+
+# Permafrost
+data/*
+models/*
+biblio/*
+
+# Python related files
+__pycache__
+
+# Spyder IDE
+.spyderproject
+
+# CatBoost library 
+catboost_info
+*.cbm
+
+
