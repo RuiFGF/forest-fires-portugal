@@ -3,12 +3,14 @@
 data/*
 models/*
 biblio/*
+graph/*
 
 # Python related files
 __pycache__
 
 # Spyder IDE
 .spyderproject
+.spyproject
 
 # CatBoost library 
 catboost_info

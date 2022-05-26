@@ -27,12 +27,12 @@ print(input_data.head())
 # Path to model storage location
 MODEL_STORAGE_PATH = 'models/'
 
+# Path to graph img storage location
+GRAPH_STORAGE_PATH = 'graph/'
+
 #%% PRE PROCESSING
 
 data_train = input_data.copy()
-
-# change numerical id to a more intuitive one
-# data_train['uid'] = data_train['x'].astype(str) + data_train['y'].astype(str) + data_train['month'].astype(str)
 
 # create the target column, whether ther was some burnt area or not
 data_train['burnt'] = np.where(data_train['area']==0, 0, 1)
@@ -58,10 +58,12 @@ data_train.replace(np.nan, 'NaN', inplace=True)
 data_train.isna().sum()
 
 # Create training and testing data
-#x, y = data_train
+# x will be the measurements
+# y will be whether there was burnt area or not
 x, y = data_train.dropna().drop(['burnt'], axis=1), data_train.dropna()['burnt']
 
-# 20 percent of records will be kept for testing with fixed random seed
+# 20 percent of records will be kept for testing 
+# fixed random seed so process can be duplicated
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=13)
 print("shape of training data is " + str(x_train.shape))
 print("shape of test data is " + str(x_test.shape))
@@ -76,32 +78,36 @@ sns.barplot(x=cat_cols, y=cards)
 ax.set_xlabel('Feature')
 ax.set_ylabel('Number of Categories')
 ax.set_title('Feature Cardinality')
+# no month nor day of the week is free of fires
 
-# Mosaic plot with gender distribution
-# labelizer = lambda k: \
-# {('M', '1'): 'Male w/ HD', ('F', '1'): 'Female w/ HD', ('M', '0'): 'Male w/o HD', ('F', '0'): 'Female w/o HD'}[k]
-# mosaic(data_train, ['Sex', 'HeartDisease'], labelizer=labelizer,
-       # title='Heart Disease by Gender, proportions in study')
+plt.show() 
+plt.savefig(GRAPH_STORAGE_PATH +"feat_cardinality.png")
 
-# Distribution of bp by disease status
-fig, ax = plt.subplots(figsize=(10, 6))
-data_train_disease = data_train[data_train['burnt'] == 1]
-data_train_no_disease = data_train[data_train['burnt'] == 0]
+months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
 
-# sns.histplot(x=data_train_no_disease['RestingBP'], label='No disease', ax=ax, kde=True, color="green")
-# sns.histplot(x=data_train_disease['RestingBP'], label='Disease', ax=ax, kde=True, color="red")
-# plt.legend(['No disease', 'Disease'])
-# ax.set_title('Resting BP Distribution')
+fig, ax = plt.subplots(figsize=(18, 6))
+sns.countplot(data=data_train, x='month', ax=ax, palette="pastel", hue='burnt', order=months)
+ax.set_xlabel('Month')
+ax.set_ylabel('Number of Categories')
+ax.set_title('Ocurrences by month')
 
 plt.show()
+plt.savefig(GRAPH_STORAGE_PATH +"ocurrences_by_month.png")
+
+# todo a plotly+dash or bokeh for an interactive dashboard
+
+# Distribution of recorded events by burnt status
+data_train_burnt = data_train[data_train['burnt'] == 1]
+data_train_no_burnt = data_train[data_train['burnt'] == 0]
 
 # Target distribution
 fig, ax = plt.subplots(figsize=(10, 6))
 print(data_train['burnt'].value_counts() / len(data_train))
 sns.countplot(x=data_train['burnt'])
-ax.set_ylabel('Área queimada?')
-ax.set_ylabel('Number de ocurrências')
-ax.set_title('Ocurências registadas')
+ax.set_ylabel('Burnt area?')
+ax.set_ylabel('Number of ocurrences')
+ax.set_title('Recorded events')
+plt.savefig(GRAPH_STORAGE_PATH +"recorded_events.png")
 
 
 #%% MODELING
@@ -141,11 +147,13 @@ feature_importance_data = pd.DataFrame({'feature': model.feature_names_, 'import
 feature_importance_data.sort_values('importance', ascending=False, inplace=True)
 
 sns.barplot(x='importance', y='feature', data=feature_importance_data)
+ax.set_title('Importance of features')
 
 plt.show()
+plt.savefig(GRAPH_STORAGE_PATH +"importance_of_features.png")
 
 
-#%% HYPER PARAMETER
+#%% HYPER PARAMETER TUNING
 
 def classification_objective(trial):
     params = {
