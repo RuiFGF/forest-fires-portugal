@@ -9,17 +9,9 @@ This is a small exercise is data science.
 
 This data was used in P. Cortez and A. Morais, “A Data Mining Approach to Predict Forest Fires using Meteorological Data,” p. 12. of fires in Montesinho natural park.
 
-![map of the park](img/img.png)
-
 All points in the dataset refer to a fire within the park, those that have a area = 0 refer to events with burnt area <1 ha. We will consider these to be events where burnt = false and those with burnt area >=1 ha with burnt = true.
 
 Each record refers to an x,y coordinate that designates a quadrant of the park, a month and a week day; it also incorporates metrics that are considered relevant to the likelihood of an event.
-
-![monthly distribution](img/img.png)
-
-![weekly distribution](img/img.png)
-
-![geographical distribution](img/img.png)
 
 
 # The model
