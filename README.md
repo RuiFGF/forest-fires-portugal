@@ -30,11 +30,11 @@ We apply Catboost to understand the weights of the metrics.
 
 One feature of the Catboost package is feature importance, i.e. which feature is most relevant to the prediction.
 
-![What features contribute most to an accurate prediction?](graph/importance_of_features.png)
+![What features contribute most to an accurate prediction?](graph/importance_of_features.png?raw=true "What features contribute most to an accurate prediction?")
 
 Month being second most important (more fires in summer months), the most important is day of the week. Looking as the distribution, we indeed see higher counts on Saturday and Sunday, more so if we include Friday and Monday. This might be related to human activity (more people visiting the park on weekends).
 
-![Occurrences by day of the week](graph/occurrences_by_day.png)
+![Occurrences by day of the week](graph/occurrences_by_day.png?raw=true "Occurrences by day of the week")
 
 
 # Future work
