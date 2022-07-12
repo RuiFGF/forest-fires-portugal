@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from statsmodels.graphics.mosaicplot import mosaic
+#from statsmodels.graphics.mosaicplot import mosaic
 
 from connection import dbconn
 
@@ -80,20 +80,34 @@ ax.set_ylabel('Number of Categories')
 ax.set_title('Feature Cardinality')
 # no month nor day of the week is free of fires
 
-plt.show() 
 plt.savefig(GRAPH_STORAGE_PATH +"feat_cardinality.png")
+plt.show() 
 
+################## DISTRIBUTION BY MONTH
 months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]
 
 fig, ax = plt.subplots(figsize=(18, 6))
 sns.countplot(data=data_train, x='month', ax=ax, palette="pastel", hue='burnt', order=months)
 ax.set_xlabel('Month')
 ax.set_ylabel('Number of Categories')
-ax.set_title('Ocurrences by month')
+ax.set_title('occurrences by month')
 plt.legend(labels=['No fire','Fire'])
 
+plt.savefig(GRAPH_STORAGE_PATH +"occurrences_by_month.png")
 plt.show()
-plt.savefig(GRAPH_STORAGE_PATH +"ocurrences_by_month.png")
+
+################## DISTRIBUTION BY DAY OF THE WEEK
+days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
+
+fig, ax = plt.subplots(figsize=(18, 6))
+sns.countplot(data=data_train, x='day', ax=ax, palette="pastel", hue='burnt', order=days)
+ax.set_xlabel('Day')
+ax.set_ylabel('Number of Categories')
+ax.set_title('occurrences by day of the week')
+plt.legend(labels=['No fire','Fire'])
+
+plt.savefig(GRAPH_STORAGE_PATH +"occurrences_by_day.png")
+plt.show()
 
 # todo a plotly+dash or bokeh for an interactive dashboard
 
@@ -106,10 +120,12 @@ fig, ax = plt.subplots(figsize=(10, 6))
 print(data_train['burnt'].value_counts() / len(data_train))
 sns.countplot(x=data_train['burnt'])
 ax.set_xlabel('')
-ax.set_ylabel('Number of ocurrences')
+ax.set_ylabel('Number of occurrences')
 ax.set_title('Recorded events')
 plt.xticks([0,1],['No fire','Fire'])
+
 plt.savefig(GRAPH_STORAGE_PATH +"recorded_events.png")
+plt.show()
 
 
 #%% MODELING
@@ -149,10 +165,11 @@ feature_importance_data = pd.DataFrame({'feature': model.feature_names_, 'import
 feature_importance_data.sort_values('importance', ascending=False, inplace=True)
 
 sns.barplot(x='importance', y='feature', data=feature_importance_data)
+ax.set_xlabel('<< Less important                More important >>')
 ax.set_title('Importance of features')
 
-plt.show()
 plt.savefig(GRAPH_STORAGE_PATH +"importance_of_features.png")
+plt.show()
 
 
 #%% HYPER PARAMETER TUNING
