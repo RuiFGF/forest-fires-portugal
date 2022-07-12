@@ -90,6 +90,7 @@ sns.countplot(data=data_train, x='month', ax=ax, palette="pastel", hue='burnt', 
 ax.set_xlabel('Month')
 ax.set_ylabel('Number of Categories')
 ax.set_title('Ocurrences by month')
+plt.legend(labels=['No fire','Fire'])
 
 plt.show()
 plt.savefig(GRAPH_STORAGE_PATH +"ocurrences_by_month.png")
@@ -104,9 +105,10 @@ data_train_no_burnt = data_train[data_train['burnt'] == 0]
 fig, ax = plt.subplots(figsize=(10, 6))
 print(data_train['burnt'].value_counts() / len(data_train))
 sns.countplot(x=data_train['burnt'])
-ax.set_ylabel('Burnt area?')
+ax.set_xlabel('')
 ax.set_ylabel('Number of ocurrences')
 ax.set_title('Recorded events')
+plt.xticks([0,1],['No fire','Fire'])
 plt.savefig(GRAPH_STORAGE_PATH +"recorded_events.png")
 
 
